@@ -21,10 +21,10 @@ library("rvest")
 library("jsonlite")
 
 
-getOldTweets= function(termoBusca, liguagem, dtInicio, dtFim) {
-  startdate =  dtInicio
-  enddate = dtFim
-  language = liguagem
+getOldTweets <- function(termoBusca, liguagem, dtInicio, dtFim) {
+  startdate <-  dtInicio
+  enddate <- dtFim
+  language <- liguagem
   searchTerm <- termoBusca
   searchbox <- URLencode(searchTerm)
   
@@ -62,104 +62,121 @@ getOldTweets= function(termoBusca, liguagem, dtInicio, dtFim) {
 }
 
 
-incrementarDias = function (data, qtdDias) {
-  ano= strtoi(str_sub(data, end=4), 10)
-  mes= strtoi(str_sub(data, start= 6, end=7), 10)
-  dia= strtoi(str_sub(data, start=9), 10)
+incrementarDias <- function (data, qtdDias) {
+  ano <- strtoi(str_sub(data, end=4), 10)
+  mes <- strtoi(str_sub(data, start= 6, end=7), 10)
+  dia <- strtoi(str_sub(data, start=9), 10)
   
-  m1= c(1,3,5,7,8,10,12)
-  m2= c(4,6,9,11)
+  m1 <- c(1,3,5,7,8,10,12)
+  m2 <- c(4,6,9,11)
   
   if(mes %in% m1) {
     #ate dia 31
     if((dia + qtdDias) > 31) {
-      mes= mes + 1
-      dia= (dia + qtdDias) - 31
+      mes <- mes + 1
+      dia <- (dia + qtdDias) - 31
     }
     else {
-      dia= dia + qtdDias
+      dia <- dia + qtdDias
     }
   }
   else if(mes == 2) {
     #ate dia 28
     if((dia + qtdDias) > 28) {
-      mes= mes + 1
-      dia= (dia + qtdDias) - 28
+      mes <- mes + 1
+      dia <- (dia + qtdDias) - 28
     }
     else {
-      dia= dia + qtdDias
+      dia <- dia + qtdDias
     }
   }
   else if(mes %in% m2) {
     if((dia + qtdDias) > 30) {
-      mes= mes + 1
-      dia= (dia + qtdDias) - 30
+      mes <- mes + 1
+      dia <- (dia + qtdDias) - 30
     }
     else {
-      dia= dia + qtdDias
+      dia <- dia + qtdDias
     }
   }
   
   if(mes > 12) {
-    ano= ano + 1
-    mes= 1
+    ano <- ano + 1
+    mes <- 1
   }
   
-  aux= c(1,2,3,4,5,6,7,8,9)
+  aux <- c(1,2,3,4,5,6,7,8,9)
   if(dia %in% aux) {
-    dia= str_c("0", dia)
+    dia <- str_c("0", dia)
   }
   
   if(mes %in% aux) {
-    mes= str_c("0", mes)
+    mes <- str_c("0", mes)
   }
   
-  resultado= str_c(ano,"-",mes,"-",dia)
+  resultado <- str_c(ano,"-",mes,"-",dia)
   
   return(resultado)
 }
 
 
 #Chaves de autenticacao
-app= "TccGuilhermeMineracaoDados"
-consumer_key= "ZScZy7d1yuLtJHte7qpnoqgN6"
-consumer_secret= "snO33GlADCvVUjLdxPGgJg0llgoys02Jmqsz2aqGoY1TYfyqcd"
-access_token= "1224651897027616771-NDquLaYkiIZzUCwbyqqwnBu57GEGzj"
-access_secret= "MAE6TzcgKfEyf1RObU2ETbXZkX699WnLPg6gAJVzBmwpj"
+app <- "TccGuilhermeMineracaoDados"
+consumer_key <- "ZScZy7d1yuLtJHte7qpnoqgN6"
+consumer_secret <- "snO33GlADCvVUjLdxPGgJg0llgoys02Jmqsz2aqGoY1TYfyqcd"
+access_token <- "1224651897027616771-NDquLaYkiIZzUCwbyqqwnBu57GEGzj"
+access_secret <- "MAE6TzcgKfEyf1RObU2ETbXZkX699WnLPg6gAJVzBmwpj"
 
 #Autenticacao com o Twitter
-token= create_token(app, consumer_key, consumer_secret, access_token, access_secret)
+token <- create_token(app, consumer_key, consumer_secret, access_token, access_secret)
+
+rm(app)
+rm(consumer_key)
+rm(consumer_secret)
+rm(access_token)
+rm(access_secret)
 
 #Consultando o Twitter
-dtInicio= "2019-01-01"
-dtFim= "2019-01-02"
-termoBusca= "stf"
-liguagem= "pt"
-ano=1
-mesAnterior= strtoi(str_sub(dtFim, start= 6, end=7), 10)
+dtInicio <- "2019-01-01"
+dtFim <- "2019-01-02"
+termoBusca <- "stf"
+liguagem <- "pt"
+ano <- 1
+mesAnterior <- strtoi(str_sub(dtFim, start= 6, end=7), 10)
 
-tweets= getOldTweets(termoBusca, liguagem, dtInicio, dtFim)
+tweets <- getOldTweets(termoBusca, liguagem, dtInicio, dtFim)
 
 while(!ano>2019) {
-  dtInicio= incrementarDias(dtInicio, 2)
-  dtFim= incrementarDias(dtFim, 2)
+  dtInicio <- incrementarDias(dtInicio, 2)
+  dtFim <- incrementarDias(dtFim, 2)
   
   print(paste("Obtendo Tweets do periodo: ", dtInicio, " ate ", dtFim))
   
-  aux= getOldTweets(termoBusca, liguagem, dtInicio, dtFim)
+  aux <- getOldTweets(termoBusca, liguagem, dtInicio, dtFim)
   
-  tweets= rbind.data.frame(tweets, aux)
+  tweets <- rbind.data.frame(tweets, aux)
   
   #Sys.sleep(60*15)
-  ano= strtoi(str_sub(dtFim, end=4), 10)
-  mes= strtoi(str_sub(dtFim, start= 6, end=7), 10)
+  ano <- strtoi(str_sub(dtFim, end=4), 10)
+  mes <- strtoi(str_sub(dtFim, start= 6, end=7), 10)
   if(mes>mesAnterior) {
-    mesAnterior= mes
+    mesAnterior <- mes
     print("Aguardando...")
     Sys.sleep(60*15)
   }
 }
 
+rm(dtInicio)
+rm(dtFim)
+rm(termoBusca)
+rm(liguagem)
+rm(ano)
+rm(mes)
+rm(mesAnterior)
+rm(aux)
+rm(getOldTweets)
+rm(incrementarDias)
+rm(token)
 
-write.csv(tweets, file="dataframe PARTE1.csv", row.names=TRUE)
+write.csv(apply(tweets,2,as.character), file="dataframe PARTE1.csv", row.names=TRUE)
 save.image("~/dataframe PARTE1.RData")

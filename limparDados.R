@@ -12,47 +12,35 @@ library("rvest")
 library("jsonlite")
 
 
-preProcessamentoTweets= function(corpus) {
-	#Coloca tudo em min√∫sculo
-	corpus= tm_map(corpus, tolower)
-	#Remove pontua√ß√£o
-	corpus= tm_map(corpus, removePunctuation)
-	#Remove n√∫meros
-	corpus= tm_map(corpus, removeNumbers);
-	#Remove espa√ßos extras em branco
-	corpus= tm_map(corpus, stripWhitespace)
-	#Remove palavras ru√≠do
-	corpus= tm_map(corpus, removeWords, stopwords('portuguese'))
+preProcessamentoTweets <- function(corpus) {
+	#Coloca tudo em minusculo
+	corpus <- tm_map(corpus, tolower)
+	#Remove pontuacao
+	corpus <- tm_map(corpus, removePunctuation)
+	#Remove numeros
+	corpus <- tm_map(corpus, removeNumbers);
+	#Remove espacos extras em branco
+	corpus <- tm_map(corpus, stripWhitespace)
+	#Remove palavras ruido
+	corpus <- tm_map(corpus, removeWords, stopwords('portuguese'))
 
 
 	#remove URLs
-	removeURL= function(x) gsub("http[^[:space:]]*", "", x)
-	corpus= tm_map(corpus, removeURL)
+	removeURL <- function(x) gsub("http[^[:space:]]*", "", x)
+	corpus <- tm_map(corpus, removeURL)
 	#remove qualquer coisa que n√£o sejam letras em portugu√™s e espa√ßo.
-	removeNumPunct= function(x) gsub("[^[:alpha:][:space:]]*", "", x)
-	corpus= tm_map(corpus, content_transformer(removeNumPunct))
+	removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
+	corpus <- tm_map(corpus, content_transformer(removeNumPunct))
 	
 	rm(removeURL)
 	rm(removeNumPunct)
-
-
-	#STEMMING
-	corpus= tm_map(corpus, stemDocument, language = "portuguese")
-	stemmed_dtm= TermDocumentMatrix(corpus)
-	stemmed_dtm_mt <- as.matrix(stemmed_dtm)
-	stemmed_frequencia <- sort(rowSums(stemmed_dtm_mt),decreasing=TRUE)
-	stemmed_DTF <- data.frame(palavra = names(stemmed_frequencia),frequencia=stemmed_frequencia)
-	
-	rm(stemmed_dtm)
-	rm(stemmed_dtm_mt)
-	rm(stemmed_frequencia)
 	
 	return(corpus)
 }
 
 
 #separamos as variaveis com maior relevancia
-tweets_selecionados= select(tweets, 
+tweets_selecionados <- select(tweets_selecionados, 
                             user_id,
                             status_id,
                             created_at,
@@ -69,32 +57,30 @@ tweets_selecionados= select(tweets,
                             retweet_count, 
                             location)
 
-write.csv(tweets_selecionados, file="dataframe PARTE2.csv", row.names=TRUE)
+write.csv(tweets_selecionados, file="tweets selecionados PARTE2.csv", row.names=TRUE)
 save.image("~/dataframe PARTE2.RData")
 
 
 #Colapsando todos os tweets em um vetor de uma posicao.
-tweets_t= paste(tweets_selecionados$text, collapse = " ")
+tweets_t <- paste(tweets_selecionados$text, collapse = " ")
 
 #criando o corpus
-tweets_S= VectorSource(tweets_t)
-corpus= Corpus(tweets_S)
+tweets_S <- VectorSource(tweets_t)
+corpus <- Corpus(tweets_S)
 
-rm(tweets_t)
-rm(tweets_S)
 
-corpus= preProcessamentoTweets(corpus)
+corpus <- preProcessamentoTweets(corpus)
 
 
 #Cria a matriz
-dtm= TermDocumentMatrix(corpus)
-dtm= removeSparseTerms(dtm, 0.99)
-dtmMatriz= as.matrix(dtm)
+dtm <- TermDocumentMatrix(corpus)
+dtm <- removeSparseTerms(dtm, 0.99)
+dtmMatriz <- as.matrix(dtm)
 #Fornece a frequencia de cada palavra
-frequencia= sort(rowSums(dtmMatriz),decreasing=TRUE)
+frequencia <- sort(rowSums(dtmMatriz),decreasing=TRUE)
 DTF_frequencia <- data.frame(palavra = names(frequencia),frequencia=frequencia)
 
-write.csv(dtmMatriz, file="dtmData PARTE3.csv", row.names=TRUE)
+write.csv(dtmMatriz, file="dtmMatriz PARTE3.csv", row.names=TRUE)
 save.image("~/dataframe PARTE3.RData")
 rm(dtmMatriz)
 
@@ -131,7 +117,7 @@ novas_stopwords_pt <- c(stopwords("pt"),
                         "aaahhhh",
                         "aaahq",
                         "pra",
-                        "t√°",
+                        "t·",
                         "desses",
                         "dessas",
                         "dessa",
@@ -139,8 +125,8 @@ novas_stopwords_pt <- c(stopwords("pt"),
                         "sempre",
                         "pois",
                         "assim",
-                        "l√°",
-                        "a√≠",
+                        "l·",
+                        "aÌ",
                         "porque",
                         "vcs",
                         "outro",
@@ -165,17 +151,17 @@ novas_stopwords_pt <- c(stopwords("pt"),
                         "hora",
                         "gente",
                         "dar",
-                        "ent√£o",
+                        "ent„o",
                         "acho",
                         "fez",
-                        "d√°",
+                        "d·",
                         "outra",
-                        "t√£o",
-                        "ap√≥s",
+                        "t„o",
+                        "apÛs",
                         "kkkkk",
                         "aqui",
                         "diz",
-                        "v√£o",
+                        "v„o",
                         "onde",
                         "aqui",
                         "vez",
@@ -185,32 +171,57 @@ novas_stopwords_pt <- c(stopwords("pt"),
                         "ainda",
                         "pro",
                         "deveria")
-corpus= tm_map(corpus, removeWords, novas_stopwords_pt)
+corpus <- tm_map(corpus, removeWords, novas_stopwords_pt)
 
-corpus= preProcessamentoTweets(corpus)
+corpus <- preProcessamentoTweets(corpus)
 
 
 #Cria a matriz
-dtm= TermDocumentMatrix(corpus)
-dtm= removeSparseTerms(dtm, 0.99)
-dtmMatriz= as.matrix(dtm)
+dtm <- TermDocumentMatrix(corpus)
+dtm <- removeSparseTerms(dtm, 0.99)
+dtmMatriz <- as.matrix(dtm)
 #Fornece a frequencia de cada palavra
-frequencia= sort(rowSums(dtmMatriz),decreasing=TRUE)
+frequencia <- sort(rowSums(dtmMatriz),decreasing=TRUE)
 DTF_frequencia <- data.frame(palavra = names(frequencia),frequencia=frequencia)
 
-write.csv(dtmMatriz, file="dtmData PARTE3.csv", row.names=TRUE)
-save.image("~/dataframe PARTE3.RData")
-rm(dtmMatriz)
+write.csv(dtmMatriz, file="dtmMatriz PARTE4.csv", row.names=TRUE)
+save.image("~/dataframe PARTE4.RData")
 
 
-#desconsideramos para a nuvem de palavras as palavras descriminativas, aquelas que ocorrem com muita frequencia ou raramente
+#desconsideramos para a nuvem de palavras as palavras descriminativas(OUTLIERS), aquelas que ocorrem com muita frequencia ou raramente
 View(frequencia)
 filter(DTF_frequencia, frequencia == max(DTF_frequencia$frequencia))
 count(filter(DTF_frequencia, frequencia == 1))
 #Removemos as palavras com maior frequencia
 removerParaWordcloud <- c('stf','stfoficial')
 corpus <- tm_map(corpus, removeWords, removerParaWordcloud)
+
+#REFAZEMOS A DTM,DTMMATRIZ, FREQUENCIA E DTF_frequencia AP”S A RETIRADA DOS OUTLIERS
+dtm <- TermDocumentMatrix(corpus)
+dtm <- removeSparseTerms(dtm, 0.99)
+dtmMatriz <- as.matrix(dtm)
+frequencia <- sort(rowSums(dtmMatriz),decreasing=TRUE)
+DTF_frequencia <- data.frame(palavra = names(frequencia),frequencia=frequencia)
+
+
 #nova nuvem de palavras ; min.freq = 2 desconsideramos as com frequencia == 1
 wordcloud(corpus, min.freq = 2, max.words=Inf, random.order=FALSE, rot.per=0.35, colors=brewer.pal(8, "Dark2"))
 
+
+#STEMMING
+#O corpus apos o stemming deve ser guardado em nova variavel para nao afetar os graficos
+stemmed_corpus <- tm_map(corpus, stemDocument, language = "portuguese")
+stemmed_dtm <- TermDocumentMatrix(stemmed_corpus)
+stemmed_dtm_mt <- as.matrix(stemmed_dtm)
+stemmed_frequencia <- sort(rowSums(stemmed_dtm_mt),decreasing=TRUE)
+stemmed_DTF <- data.frame(palavra = names(stemmed_frequencia),frequencia=stemmed_frequencia)
+
+
+rm(tweets_t)
+rm(tweets_S)
+rm(dtmMatriz)
 rm(removerParaWordcloud)
+rm(stemmed_dtm)
+rm(stemmed_dtm_mt)
+rm(stemmed_frequencia)
+rm(preProcessamentoTweets)

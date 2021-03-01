@@ -9,20 +9,23 @@ library("lubridate")
 library("ggplot2")
 library("tidytext")
 library("quanteda")
+library("tm")
+library("stringr")
+library("dplyr")
 
 
 ########################### Analise de sentimentos Pacote Syuzhet ###########################
 #install.packages("syuzhet")
 library("syuzhet")
-termos <- as.character(tweets_selecionados$text)
+termos <- as.character(stemmed_DTF$palavra)#tweets_selecionados$text)
 sentimentosMatriz <- get_nrc_sentiment(termos)
 
 ##Todos os sentimentos
 barplot(colSums(sentimentosMatriz), las=2, col=c("red", "lightgreen", "orange", "lightblue", "pink", "grey", "yellow", "darkgreen", "darkblue", "black"), 
-        main = "Análise de sentimentos de Tweets sobre STF")
+        main = "An�lise de sentimentos de Tweets sobre STF")
 ##Apenas negativos e positivos
 barplot(colSums(sentimentosMatriz[,9:10]), las=2, col=c("red", "lightblue"),  
-        main = "Sentimentos Positivos/Negativos nos Tweets sobre STF")
+        main = "Sentimentos Positivos-Negativos nos Tweets sobre STF")
 ###########################
 rm(termos)
 rm(sentimentosMatriz)
@@ -30,7 +33,7 @@ rm(sentimentosMatriz)
 
 
 
-########################### Análise de sentimentos Lexicon ###########################
+########################### Analise de sentimentos Lexicon ###########################
 #Utilizados Lexico da Linguateca ReLi e Lexico CHEN/SKIENA-2014 - KAGGLE
 #foi necessario ajustar os arquivos da Linguateca ReLi para o formato utf-8, 
 #pois estavam perdendo os caracteres com acentuacao e remover observacoes e linhas em branco
@@ -84,12 +87,13 @@ rm(verbos_positivos)
 rm(substantivos_positivos)
 rm(kaggle_palavras_pos)
 rm(kaggle_palavras_neg)
+rm(qtd)
 
 ########################### Remover termos duplicados do data frame de polaridade ###########################
 DATA_FRAME_Polaridades <- DATA_FRAME_Polaridades[!duplicated(DATA_FRAME_Polaridades$palavra),]
 DATA_FRAME_Polaridades %>% count()
 
-save.image("~/dataframe PARTE4.RData")
+save.image("~/dataframe PARTE5.RData")
 
 
 positivas <- DATA_FRAME_Polaridades %>% filter(sentimento == 'positivo') %>% select(palavra)
@@ -99,21 +103,59 @@ dicionario_polaridades <- dictionary(list(positivas=as.character(positivas$palav
 rm(positivas)
 rm(negativas)
 
-########################### CONSTRUIR UMA MATRIZ DFM ESPARSSA A PARTIR DO DICIONÁRIO ###########################
-dfmPorSentimento <- dfm(corpus(corpus), dictionary=dicionario_polaridades)
+########################### CONSTRUIR UMA MATRIZ DFM ESPARSSA A PARTIR DO DICIONARIO ###########################
+dfmPorSentimento <- dfm(corpus(stemmed_corpus), dictionary=dicionario_polaridades)
 
 pontuacaoPorGrupo <- tidy(dfmPorSentimento %>% 
                             dfm_group(groups='whois'))
 pontuacaoPorGrupo
 
 ###################################### CLASSIFICAR CADA TWEET COMO POSITIVO OU NEGATIVO ######################################
+preProcessamentoPorTweet <- function(texto) {
+  #cria um corpus apenas par o texto do tweet
+  textoCorpus <- Corpus(VectorSource(texto))
+  
+  #Coloca tudo em minusculo
+  textoCorpus <- tm_map(textoCorpus, tolower)
+  #Remove pontuacao
+  textoCorpus <- tm_map(textoCorpus, removePunctuation)
+  #Remove numeros
+  textoCorpus <- tm_map(textoCorpus, removeNumbers);
+  #Remove espacos extras em branco
+  textoCorpus <- tm_map(textoCorpus, stripWhitespace)
+  #Remove palavras ruido
+  textoCorpus <- tm_map(textoCorpus, removeWords, stopwords('portuguese'))
+  textoCorpus <- tm_map(textoCorpus, removeWords, novas_stopwords_pt)
+  
+  
+  #remove URLs
+  removeURL <- function(x) gsub("http[^[:space:]]*", "", x)
+  textoCorpus <- tm_map(textoCorpus, removeURL)
+  #remove qualquer coisa que não sejam letras em portugues e espaco.
+  removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
+  textoCorpus <- tm_map(textoCorpus, content_transformer(removeNumPunct))
+  
+  #stemming
+  textoCorpus <- tm_map(textoCorpus, stemDocument, language = "portuguese")
+  texto <- as.character(textoCorpus)
+  
+  rm(removeURL)
+  rm(removeNumPunct)
+  
+  return(texto)
+}
+
 DF_analisePorTweet <- data.frame(tweets_selecionados)
+
 i <- 1
 tamanho <- length(DF_analisePorTweet$text)
 while(i <= tamanho) {
-  dfm_analisePorTweet <- dfm(DF_analisePorTweet$text[i], dictionary=dicionario_polaridades)
-  dfm_positivas <- dfm_select(dfm_analisePorTweet, pattern = "positivas")
-  dfm_negativas <- dfm_select(dfm_analisePorTweet, pattern = "negativas")
+  #processamento
+  textoProcessado <- preProcessamentoPorTweet(DF_analisePorTweet$text[i])
+  #classificacao
+  textoClassificado <- dfm(textoProcessado, dictionary=dicionario_polaridades)
+  dfm_positivas <- dfm_select(textoClassificado, pattern = "positivas")
+  dfm_negativas <- dfm_select(textoClassificado, pattern = "negativas")
   if(as.logical(dfm_positivas >= dfm_negativas)) {
     classe <- "positivo"
   } else {
@@ -122,15 +164,15 @@ while(i <= tamanho) {
   DF_analisePorTweet$classificacao[i] <- classe
   i <- i+1
 }
-
 DF_analisePorTweet$data <- as.Date(DF_analisePorTweet$created_at)
 
-write.csv(DF_analisePorTweet, file="dataframe PARTE5.csv", row.names=TRUE)
-save.image("~/dataframe PARTE5.RData")
+write.csv(DF_analisePorTweet, file="DF_analisePorTweet PARTE5.csv", row.names=TRUE)
+save.image("~/dataframe PARTE6.RData")
 
-rm(i)
+rm(textoProcessado)
+rm(textoClassificado)
 rm(tamanho)
-rm(classe)
+rm(i)
 rm(dfm_positivas)
 rm(dfm_negativas)
-rm(dfm_analisePorTweet)
+rm(classe)
