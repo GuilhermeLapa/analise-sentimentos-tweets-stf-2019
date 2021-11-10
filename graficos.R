@@ -8,35 +8,61 @@ library("tm")
 library("dplyr")
 
 
+DF_analisePorTweet$mes <- as.integer(str_sub(DF_analisePorTweet$data,6,7))
+
 
 ###################################### GRAFICOS ######################################
-##### Grafico por polaridade ######################################
-pontuacaoPorGrupo %>%
-  ggplot(aes(term, count)) +
-  geom_bar(stat = 'identity') +
-  geom_smooth() +
-  xlab("Termos") +
-  ylab("Quantidade") +
-  ggtitle("Frequência por polaridade") +
-  aes(fill= term,color = term) + scale_color_manual(values = c("red", "green"))
-
 #####Graficos Tweets ano 2019#####
-select(DF_analisePorTweet, classificacao, data) %>% 
+select(DF_analisePorTweet, classificacao, mes) %>% 
   ggplot() +
-  xlab("Data") +
+  scale_y_continuous(limits = c(0,70000), breaks = seq(0,70000,5000)) + 
+  scale_x_continuous(limits = c(0,13), breaks = seq(1:12)) + 
+  xlab("Mês") +
   ylab("Quantidade de Tweets") +
   ggtitle("Tweets sobre STF ano 2019") +
-  geom_bar(aes(x = data), color = "black", fill = "light blue")
+  geom_bar(aes(x = mes), color = "black", fill = "light green")
+
+#####Graficos Tweets ano 2019 com rotulos#####
+ggplot(select(DF_analisePorTweet, classificacao, mes), aes(x=mes)) +
+  scale_x_continuous(limits = c(0,13), breaks = seq(1:12)) +
+  scale_y_continuous(limits = c(0,70000), breaks = seq(0,70000,5000)) + 
+  geom_bar(color = "black", fill= "light green")+
+  geom_text(aes(label=..count..), stat='count', position=position_fill(vjust=0.5), vjust=-0.2) + 
+  xlab("Mês") +
+  ylab("Quantidade de Tweets") +
+  ggtitle("Tweets sobre STF ano 2019")
+
+
+##### Grafico por polaridade ######################################
+pontuacaoPorGrupo
+
+pontuacaoPorGrupo %>%
+  ggplot(aes(term, count)) +
+  geom_bar(stat = 'identity', fill=c("lightblue", "tomato")) +
+  scale_y_continuous(limits = c(0,290000), breaks = seq(0,286000,10000)) + 
+  labs(x="Termos", 
+       y="Quantidade", 
+       title="Frequência por polaridade")
+
+##### Grafico por polaridade no ano 2019 ######################################
+ggplot(DF_analisePorTweet,aes(x=factor(mes),fill=factor(classificacao)))+
+  scale_y_continuous(limits = c(0,60000), breaks = seq(0,60000,5000)) + 
+  geom_bar(position="dodge")+
+  geom_text(aes(label=..count..), stat='count', position=position_dodge(0.9), vjust=-0.2, show.legend = FALSE, size= 3) + 
+  xlab("Mês") +
+  ylab("Quantidade de Tweets") +
+  ggtitle("Quantidade de Tweets Por Polaridade no ano 2019")
+
 
 #####Graficos Tweets positivos#####
 df_dfm_positivas <- filter(DF_analisePorTweet, classificacao=="positivo")
 df_dfm_positivas <- select(df_dfm_positivas, classificacao, data)
 
-filter(df_dfm_positivas, data>=as.Date('2019-01-01'), data<=as.Date('2019-01-31')) %>% 
+filter(df_dfm_positivas, data>=as.Date('2019-12-01'), data<=as.Date('2019-12-31')) %>% 
   ggplot() +
   xlab("Data") +
   ylab("Quantidade de Tweets") +
-  ggtitle("Tweets Positivos Janeiro 2019") +
+  ggtitle("Tweets Positivos Dezembro 2019") +
   geom_bar(aes(x = data), color = "black", fill = "light blue")
 
 
@@ -44,17 +70,17 @@ filter(df_dfm_positivas, data>=as.Date('2019-01-01'), data<=as.Date('2019-01-31'
 df_dfm_negativas <- filter(DF_analisePorTweet, classificacao=="negativo")
 df_dfm_negativas <- select(df_dfm_negativas, classificacao, data)
 
-filter(df_dfm_negativas, data>=as.Date('2019-01-01'), data<=as.Date('2019-01-31')) %>% 
+filter(df_dfm_negativas, data>=as.Date('2019-12-01'), data<=as.Date('2019-12-31')) %>% 
   ggplot() +
   xlab("Data") +
   ylab("Quantidade de Tweets") +
-  ggtitle("Tweets Negativos Janeiro 2019") +
-  geom_bar(aes(x = data), color = "black", fill = "red")
+  ggtitle("Tweets Negativos Dezembro 2019") +
+  geom_bar(aes(x = data), color = "black", fill = "tomato")
 
 
 rm(df_dfm_positivas)
 rm(df_dfm_negativas)
-############################################################################
+#################################################################################
 
 
 
@@ -67,55 +93,29 @@ porcentagem <- round(barras/sum(barras)*100)
 legenda= DTF_frequencia$palavra[1:10]
 ggplot(DTF_frequencia[1:10,], aes(x = palavra, y = frequencia, fill = legenda)) + 
         geom_bar(stat = "identity") + 
+        scale_y_continuous(limits = c(0,25000), breaks = seq(0,25000,2500)) + 
         theme(axis.text.x = element_text(angle=90, hjust=1), plot.title = element_text(size = 12, color = "blue", hjust = 0.5)) + 
         xlab("Palavras") + ylab("Frequência") + 
         ggtitle("10 Palavras Mais Frequentes")
-##########
-legenda= DTF_frequencia$palavra[2:11]
-ggplot(DTF_frequencia[2:11,], aes(x = palavra, y = frequencia, fill = legenda)) + 
-        geom_bar(stat = "identity") + 
-        theme(axis.text.x = element_text(angle=90, hjust=1), plot.title = element_text(size = 12, color = "blue", hjust = 0.5)) + 
-        xlab("Palavras") + ylab("Frequência") + 
-        ggtitle("10 Palavras Mais Frequentes Exceto STF")
 
 #########GRAFICO BOXPLOT
 legenda= DTF_frequencia$palavra[1:10]
 DTF_frequencia[1:10,] %>% 
         ggplot() + 
         geom_boxplot(aes(x = palavra, y = frequencia, fill = legenda)) + 
+        scale_y_continuous(limits = c(12000,25000), breaks = seq(12000,25000,1000)) + 
         theme(text = element_text(size=10), axis.text.x = element_text(angle=90, hjust=1)) + 
-        xlab("Palavras") + ylab("FrequÃªncia") + 
+        xlab("Palavras") + ylab("Frequência") + 
         ggtitle("10 Palavras Mais Frequentes")
-
-legenda= DTF_frequencia$palavra[2:11]
-DTF_frequencia[2:11,] %>% 
-        ggplot() + 
-        geom_boxplot(aes(x = palavra, y = frequencia, fill = legenda)) + 
-        theme(text = element_text(size=10), axis.text.x = element_text(angle=90, hjust=1)) + 
-        xlab("Palavras") + ylab("FrequÃªncia") + 
-        ggtitle("10 Palavras Mais Frequentes Exceto STF")
 
 #########GRAFICO SCATTERPLOT
 filter(DTF_frequencia, frequencia>=5000) %>% 
         ggplot(aes(x= palavra, y= frequencia)) +
         geom_point() + 
+        scale_y_continuous(limits = c(5000,25000), breaks = seq(5000,25000,1000)) + 
         theme(text = element_text(size=10), axis.text.x = element_text(angle=90, hjust=1)) + 
-        xlab("Palavras") + ylab("FrequÃªncia") + 
-        ggtitle("Palavras com frequÃªncia maior que 5000")
-
-filter(filter(DTF_frequencia, frequencia>=5000), palavra!="stf", palavra!="stfoficial") %>% 
-        ggplot(aes(x= palavra, y= frequencia)) +
-        geom_point() + 
-        theme(text = element_text(size=10), axis.text.x = element_text(angle=90, hjust=1)) + 
-        xlab("Palavras") + ylab("FrequÃªncia") + 
-        ggtitle("Palavras com frequÃªncia maior que 5000 exceto STF e STFOFICIAL")
-
-filter(filter(DTF_frequencia, frequencia>=4000), palavra!="stf", palavra!="stfoficial") %>% 
-        ggplot(aes(x= palavra, y= frequencia)) +
-        geom_point() + #geom_smooth(method = "lm") + 
-        theme(text = element_text(size=10), axis.text.x = element_text(angle=90, hjust=1)) + 
-        xlab("Palavras") + ylab("FrequÃªncia") + 
-        ggtitle("Palavras com frequÃªncia maior que 4000 exceto STF e STFOFICIAL")
+        xlab("Palavras") + ylab("Frequência") + 
+        ggtitle("Palavras com frequência maior que 5000")
 
 #########################
 rm(barras)

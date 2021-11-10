@@ -1,4 +1,7 @@
 
+
+#load("~/dataframe PARTE1.RData")
+
 library("tm")
 library("stringr")
 library("dplyr")
@@ -33,7 +36,7 @@ length(tweets$user_id) - 234278 # = 21546
 
 #21546 tweets nao contem a palavra "stf"??
 #textos com fontes diferentes mesmo que possuam a palavra "stf"
-#nao sao contabilizados pela funcao str_detect
+#nao sao contabilizados pela funcao str_count()
 tweets$text[50384]
 tweets$screen_name[50384]
 str_detect(tweets$text[50384], "sTF")

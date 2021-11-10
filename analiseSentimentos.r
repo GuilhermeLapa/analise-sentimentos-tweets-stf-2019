@@ -104,7 +104,7 @@ rm(positivas)
 rm(negativas)
 
 ########################### CONSTRUIR UMA MATRIZ DFM ESPARSSA A PARTIR DO DICIONARIO ###########################
-dfmPorSentimento <- dfm(corpus(stemmed_corpus), dictionary=dicionario_polaridades)
+dfmPorSentimento <- dfm(corpus(corpus), dictionary=dicionario_polaridades)
 
 pontuacaoPorGrupo <- tidy(dfmPorSentimento %>% 
                             dfm_group(groups='whois'))
@@ -134,10 +134,6 @@ preProcessamentoPorTweet <- function(texto) {
   #remove qualquer coisa que não sejam letras em portugues e espaco.
   removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
   textoCorpus <- tm_map(textoCorpus, content_transformer(removeNumPunct))
-  
-  #stemming
-  textoCorpus <- tm_map(textoCorpus, stemDocument, language = "portuguese")
-  texto <- as.character(textoCorpus)
   
   rm(removeURL)
   rm(removeNumPunct)
@@ -176,3 +172,4 @@ rm(i)
 rm(dfm_positivas)
 rm(dfm_negativas)
 rm(classe)
+rm(preProcessamentoPorTweet)
