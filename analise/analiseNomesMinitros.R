@@ -36,7 +36,7 @@ calcularQtdPosNegOcorrencia <- function(indices) {
 ####################
 ##### toffoli
 length(which(str_count(DF_analisePorTweet$text, "toffoli") >= 1))
-filter(DTF_frequencia, palavra == "toffoli")
+filter(dataFrameFrequencia, palavra == "toffoli")
 
 qtd <- 0
 i <- 1
@@ -59,7 +59,7 @@ rm(indices)
 ####################
 ##### gilmar
 length(which(str_count(DF_analisePorTweet$text, "gilmar") >= 1))
-filter(DTF_frequencia, palavra == "gilmar")
+filter(dataFrameFrequencia, palavra == "gilmar")
 
 qtd <- 0
 i <- 1
@@ -82,7 +82,7 @@ rm(indices)
 ####################
 ##### carmen
 length(which(str_count(DF_analisePorTweet$text, "carmen") >= 1))
-filter(DTF_frequencia, palavra == "carmen")
+filter(dataFrameFrequencia, palavra == "carmen")
 
 qtd <- 0
 i <- 1
@@ -105,7 +105,7 @@ rm(indices)
 ####################
 ##### fachin
 length(which(str_count(DF_analisePorTweet$text, "fachin") >= 1))
-filter(DTF_frequencia, palavra == "fachin")
+filter(dataFrameFrequencia, palavra == "fachin")
 
 qtd <- 0
 i <- 1
@@ -128,7 +128,7 @@ rm(indices)
 ####################
 ##### barroso
 length(which(str_count(DF_analisePorTweet$text, "barroso") >= 1))
-filter(DTF_frequencia, palavra == "barroso")
+filter(dataFrameFrequencia, palavra == "barroso")
 
 qtd <- 0
 i <- 1
@@ -151,7 +151,7 @@ rm(indices)
 ####################
 ##### mello
 length(which(str_count(DF_analisePorTweet$text, "mello") >= 1))
-filter(DTF_frequencia, palavra == "mello")
+filter(dataFrameFrequencia, palavra == "mello")
 
 qtd <- 0
 i <- 1
@@ -174,7 +174,7 @@ rm(indices)
 ####################
 ##### weber
 length(which(str_count(DF_analisePorTweet$text, "weber") >= 1))
-filter(DTF_frequencia, palavra == "weber")
+filter(dataFrameFrequencia, palavra == "weber")
 
 qtd <- 0
 i <- 1
@@ -197,7 +197,7 @@ rm(indices)
 ####################
 ##### fux
 length(which(str_count(DF_analisePorTweet$text, "fux") >= 1))
-filter(DTF_frequencia, palavra == "fux")
+filter(dataFrameFrequencia, palavra == "fux")
 
 qtd <- 0
 i <- 1
@@ -220,7 +220,7 @@ rm(indices)
 ####################
 ##### lewandowski
 length(which(str_count(DF_analisePorTweet$text, "lewandowski") >= 1))
-filter(DTF_frequencia, palavra == "lewandowski")
+filter(dataFrameFrequencia, palavra == "lewandowski")
 
 qtd <- 0
 i <- 1
@@ -243,7 +243,7 @@ rm(indices)
 ####################
 ##### moraes
 length(which(str_count(DF_analisePorTweet$text, "moraes") >= 1))
-filter(DTF_frequencia, palavra == "moraes")
+filter(dataFrameFrequencia, palavra == "moraes")
 
 qtd <- 0
 i <- 1
@@ -268,8 +268,8 @@ rm(indices)
 ####################
 ##### marco
 length(which(str_count(DF_analisePorTweet$text, "marco aurelio") >= 1))
-filter(DTF_frequencia, palavra == "marco")
-filter(DTF_frequencia, palavra == "aurelio")
+filter(dataFrameFrequencia, palavra == "marco")
+filter(dataFrameFrequencia, palavra == "aurelio")
 
 qtd <- 0
 i <- 1
