@@ -86,12 +86,12 @@ rm(df_dfm_negativas)
 
 
 #####################################Graficos com ggplot2
-barras <- DTF_frequencia$frequencia[2:100]
+barras <- dataFrameFrequencia$frequencia[2:100]
 porcentagem <- round(barras/sum(barras)*100)
 
 ##########GRAFICO BARRAS
-legenda= DTF_frequencia$palavra[1:10]
-ggplot(DTF_frequencia[1:10,], aes(x = palavra, y = frequencia, fill = legenda)) + 
+legenda= dataFrameFrequencia$palavra[1:10]
+ggplot(dataFrameFrequencia[1:10,], aes(x = palavra, y = frequencia, fill = legenda)) + 
         geom_bar(stat = "identity") + 
         scale_y_continuous(limits = c(0,25000), breaks = seq(0,25000,2500)) + 
         theme(axis.text.x = element_text(angle=90, hjust=1), plot.title = element_text(size = 12, color = "blue", hjust = 0.5)) + 
@@ -99,8 +99,8 @@ ggplot(DTF_frequencia[1:10,], aes(x = palavra, y = frequencia, fill = legenda)) 
         ggtitle("10 Palavras Mais Frequentes")
 
 #########GRAFICO BOXPLOT
-legenda= DTF_frequencia$palavra[1:10]
-DTF_frequencia[1:10,] %>% 
+legenda= dataFrameFrequencia$palavra[1:10]
+dataFrameFrequencia[1:10,] %>% 
         ggplot() + 
         geom_boxplot(aes(x = palavra, y = frequencia, fill = legenda)) + 
         scale_y_continuous(limits = c(12000,25000), breaks = seq(12000,25000,1000)) + 
@@ -109,7 +109,7 @@ DTF_frequencia[1:10,] %>%
         ggtitle("10 Palavras Mais Frequentes")
 
 #########GRAFICO SCATTERPLOT
-filter(DTF_frequencia, frequencia>=5000) %>% 
+filter(dataFrameFrequencia, frequencia>=5000) %>% 
         ggplot(aes(x= palavra, y= frequencia)) +
         geom_point() + 
         scale_y_continuous(limits = c(5000,25000), breaks = seq(5000,25000,1000)) + 

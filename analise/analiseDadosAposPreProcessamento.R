@@ -13,21 +13,21 @@ library("ggplot2")
 #Resumo dos dados iniciais
 #Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 #1.00      1.00      1.00     21.17      4.00 23784.00
-summary(DTF_frequencia$frequencia)
+summary(dataFrameFrequencia$frequencia)
 
 #82485 palavras possuem frequencia igual a 1
-totalPalavrasComFrequencia1 <- count(filter(DTF_frequencia, frequencia == 1))
+totalPalavrasComFrequencia1 <- count(filter(dataFrameFrequencia, frequencia == 1))
 #56% das palavras da tabela possuem frequência igual a 1
-porcentagemPalavrasComFrequencia1 <- (totalPalavrasComFrequencia1/length(DTF_frequencia$frequencia)) * 100
+porcentagemPalavrasComFrequencia1 <- (totalPalavrasComFrequencia1/length(dataFrameFrequencia$frequencia)) * 100
 
 #resumo dos dados desconsiderando as palavras com ocorrencia 1
 #Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 #2.00      2.00      5.00     47.34     15.00 23784.00 
-summary(filter(DTF_frequencia, frequencia != 1)$frequencia)
+summary(filter(dataFrameFrequencia, frequencia != 1)$frequencia)
 
 
 #########GRAFICO SCATTERPLOT
-filter(DTF_frequencia, frequencia>=5000) %>% 
+filter(dataFrameFrequencia, frequencia>=5000) %>% 
   ggplot(aes(x= palavra, y= frequencia)) +
   geom_point() + 
   scale_y_continuous(limits = c(5000,220000), breaks = seq(5000,220000,10000)) + 
@@ -42,13 +42,13 @@ filter(DTF_frequencia, frequencia>=5000) %>%
 #resumo dos dados desconsiderando as palavras com ocorrencia 1 e as palavras 'stf' e 'stfoficial'
 #Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
 #2.00     2.00     5.00    47.34    15.00 23784.00 
-summary(filter(filter(DTF_frequencia, frequencia != 1), palavra != 'stf', palavra != 'stfoficial')$frequencia)
+summary(filter(filter(dataFrameFrequencia, frequencia != 1), palavra != 'stf', palavra != 'stfoficial')$frequencia)
 
-DTF_frequencia <- filter(filter(DTF_frequencia, palavra != 'stf', palavra != 'stfoficial'), frequencia>1)
+dataFrameFrequencia <- filter(filter(dataFrameFrequencia, palavra != 'stf', palavra != 'stfoficial'), frequencia>1)
 
 
 #########GRAFICO SCATTERPLOT
-filter(DTF_frequencia, frequencia>=5000) %>% 
+filter(dataFrameFrequencia, frequencia>=5000) %>% 
   ggplot(aes(x= palavra, y= frequencia)) +
   geom_point() + 
   scale_y_continuous(limits = c(5000,25000), breaks = seq(5000,25000,1000)) + 
