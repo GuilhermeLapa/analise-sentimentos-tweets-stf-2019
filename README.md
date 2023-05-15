@@ -37,7 +37,7 @@ Nessa etapa foram utilizados os pacotes [Dplyr](https://dplyr.tidyverse.org/) e 
 
 ## Classificação
 
-Para realizar a classificação foi criado um léxico baseado nos dados do [Léxico do ReLi(https://www.linguateca.pt/Repositorio/ReLi/) e o léxico para português criado por {CHEN; SKIENA, 2014](https://aclanthology.org/P14-2063/) disponibilizado na rede [Kaggle](https://www.kaggle.com/datasets/rtatman/sentiment-lexicons-for-81-languages).
+Para realizar a classificação foi criado um léxico baseado nos dados do [Léxico do ReLi](https://www.linguateca.pt/Repositorio/ReLi/) e o léxico para português criado por [(CHEN; SKIENA, 2014)](https://aclanthology.org/P14-2063/) disponibilizado na rede [Kaggle](https://www.kaggle.com/datasets/rtatman/sentiment-lexicons-for-81-languages).
 
 ## Análise
 
