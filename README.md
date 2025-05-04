@@ -3,7 +3,8 @@
 
 # Análise de Sentimentos dos Tweets Relacionados ao Superior Tribunal Federal no Ano de 2019
 
-Um projeto desenvolvido em R para o trabalho de conclusão de curso do Bacharelado em Sistemas de Infomação da Universidade Federal Rural de Pernambuco. O trabalho completo pode ser baixado pelo link: [Análise de Sentimentos dos Tweets Relacionados ao Superior Tribunal Federal no Ano de 2019.pdf](https://github.com/GuilhermeLapa/analise-sentimentos-tweets-stf-2019/files/11311640/Analise.de.Sentimentos.dos.Tweets.Relacionados.ao.Superior.Tribunal.Federal.no.Ano.de.2019.pdf).
+Um projeto desenvolvido em R para o trabalho de conclusão de curso do Bacharelado em Sistemas de Infomação da Universidade Federal Rural de Pernambuco. O trabalho completo pode ser baixado pelo link: [Análise de Sentimentos dos Tweets Relacionados ao Superior Tribunal Federal no Ano de 2019.pdf](https://github.com/user-attachments/files/20029646/Analise.de.Sentimentos.dos.Tweets.Relacionados.ao.Superior.Tribunal.Federal.no.Ano.de.2019.pdf)
+.
 
 ## Detalhes
 
